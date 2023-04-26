@@ -37,9 +37,14 @@
             //Prelevo l'id territorio
             $rispDb = getIdTerritorio($record[1], $conn);
             $jObj-> territorio = $rispDb;
+
             //prelevare l'id tipo veicolo
+            $rispDb = getIdTipoVeicolo($record[5], $conn);
+            $jObj-> tipoVeicolo = $rispDb;
 
             //Prelevare l'id tipo dato
+            $rispDb = getIdTipoDato($record[3], $conn);
+            $jObj-> tipoDato = $rispDb;
 
         }
     }else{
@@ -77,8 +82,68 @@ function getIdTerritorio($desc, $conn){
             //trasforma la tabella ritornata in un vettore associativo 
             $vet = $ris->fetch_assoc();
             $jObj->idTer = $vet["idTer"];
-        }else{
-            
+        }else{  
+            $query = "INSERT INTO territori (descr) VALUES ('".$desc."')";
+            $ris = $conn->query($query);
+            if($ris && $conn->affected_rows > 0){
+                //Richiedo l'id
+                /*$query = "SELECT idTer FROM territori WHERE descr='".$desc."'";
+                $ris = $conn->query($query);
+                if($ris && $ris->num_rows > 0){
+                    $vet = $ris->fetch_assoc();
+                    $jObj->idTer = $vet["idTer"];
+                }*/
+
+                $jObj = getIdTerritorio($desc, $conn);//Sostituisce il commento precedente
+            }else{
+                $jObj = preparaRisp(-1, "Errore nell'inserimento");
+            }
+        }
+    }else{
+        $jObj = preparaRisp(-1, "Errore nella query");
+    }
+    return $jObj;
+}
+
+function getIdTipoVeicolo($desc, $conn){
+    $query = "SELECT idTipoVeicolo FROM tipiveicoli WHERE descr='".$desc."'";
+    $ris = $conn->query($query);
+    if($ris){
+        $jObj = preparaRisp(0, "Query ok");
+        if($ris->num_rows > 0){
+            $vet = $ris->fetch_assoc();
+            $jObj->idTipoVeicolo = $vet["idTipoVeicolo"];
+        }else{  
+            $query = "INSERT INTO tipiveicoli (descr) VALUES ('".$desc."')";
+            $ris = $conn->query($query);
+            if($ris && $conn->affected_rows > 0){
+                $jObj = getIdTipoVeicolo($desc, $conn);
+            }else{
+                $jObj = preparaRisp(-1, "Errore nell'inserimento");
+            }
+        }
+    }else{
+        $jObj = preparaRisp(-1, "Errore nella query");
+    }
+    return $jObj;
+}
+
+function getIdTipoDato($desc, $conn){
+    $query = "SELECT idTipo FROM tipidati WHERE descr='".$desc."'";
+    $ris = $conn->query($query);
+    if($ris){
+        $jObj = preparaRisp(0, "Query ok");
+        if($ris->num_rows > 0){
+            $vet = $ris->fetch_assoc();
+            $jObj->idTipo = $vet["idTipo"];
+        }else{  
+            $query = "INSERT INTO tipidati (descr) VALUES ('".$desc."')";
+            $ris = $conn->query($query);
+            if($ris && $conn->affected_rows > 0){
+                $jObj = getIdTipoDato($desc, $conn);
+            }else{
+                $jObj = preparaRisp(-1, "Errore nell'inserimento");
+            }
         }
     }else{
         $jObj = preparaRisp(-1, "Errore nella query");
