@@ -46,18 +46,21 @@
             $rispDb = getIdTipoDato($record[3], $conn);
             $jObj-> tipoDato = $rispDb;
 
+            //4. Costruire la INSERT
+            $query = "INSERT INTO mezzi (idTer, idTipo, idTipoVeicolo, anno, val)
+                        VALUES (".$jObj->territorio->idTer.", ".$jObj->tipoDato->idTipo.",
+                        ".$jObj->tipoVeicolo->idTipoVeicolo.", ".$record[7].", ".$record[8].")";
+            $ris = $conn->query($query);
+            if($ris && $conn->affected_rows > 0){
+                $jObj = preparaRisp(0, "Inserimento del mezzo avvenuto con successo");
+            }else{
+                $jObj = preparaRisp(-2, "Errore nella query: ".$conn->error);
+            }
         }
     }else{
         //Quando ci sono errori
         $jObj = preparaRisp(-1, "Errore nella query: ".$conn->error);
     }
- 
-
-    //4. Costruire la INSERT
-
-
-    //5. Verificare il risultato
-
 
     //Rispondo al javascript (al client)
     echo json_encode($jObj);

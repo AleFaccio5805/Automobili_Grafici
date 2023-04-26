@@ -48,14 +48,16 @@ function onbtnCarica(){
 
         //Contatto il server
         //Proviamo a connetterci al server
-        let busta = await fetch(urlBase + "server/inserisciMezzo.php", {
-                method:"post",
-                body:JSON.stringify(record[2])
-            }
-        );
-
-        //Leggo il contenuto della busta
-        console.log(await busta.json());
+        for(let i=2; i< 10; i++){
+            let busta = await fetch(urlBase + "server/inserisciMezzo.php", {
+                    method:"post",
+                    body:JSON.stringify(record[i])
+                }
+            );
+            //Leggo il contenuto della busta
+            console.log(await busta.json());
+        }
+        //Il server ha già finito o no? Con l'await ha già finito -> poco efficiente
 
         //Creazione dinamica della tabella: 1,3,5,7,8
         let tabella = document.createElement("table");
