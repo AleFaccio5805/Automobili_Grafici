@@ -1,16 +1,14 @@
 <?php
-    $jObj = new stdClass();
+    $jObj = null;
 
     //1. Collegarci al db
     $indirizzoServerDBMS = "localhost";
     $nomeDb = "4a_mezzi";
     $conn = mysqli_connect($indirizzoServerDBMS, "root", "", $nomeDb);
     if($conn->connect_errno>0){
-        $jObj->cod = -1;
-        $jObj->desc = "Connessione rifiutata";
+        $jObj = preparaRisp(-1, "Connessione rifiutata");
     }else{
-        $jObj->cod = 0;
-        $jObj->desc = "Connessione ok";
+        $jObj = preparaRisp(0, "Connessione ok");
     }
 
 
@@ -29,12 +27,24 @@
             AND m.val = ".$record[8];
     $ris = $conn->query($query);
     if($ris){
-        $jObj->cod = 0;
-        $jObj->desc = "Query ok";
-        $jObj->risp = $risp->num_rows;
+        //Quando la query non ha errori -> finisco qua anche con tabella vuota
+        if($ris->num_rows > 0){
+            $jObj = preparaRisp(0, "Record presente", $jObj);
+            $jObj->risp = $ris->num_rows;
+        }else{
+            $jObj = preparaRisp(-1, "Record non presente", $jObj);
+
+            //Prelevo l'id territorio
+            $rispDb = getIdTerritorio($record[1], $conn);
+            $jObj-> territorio = $rispDb;
+            //prelevare l'id tipo veicolo
+
+            //Prelevare l'id tipo dato
+
+        }
     }else{
-        $jObj->cod = -1;
-        $jObj->desc = "Errore nella query: ".$conn->error;
+        //Quando ci sono errori
+        $jObj = preparaRisp(-1, "Errore nella query: ".$conn->error);
     }
  
 
@@ -46,3 +56,32 @@
 
     //Rispondo al javascript (al client)
     echo json_encode($jObj);
+
+
+function preparaRisp($cod, $desc, $jObj = null){
+    if(is_null($jObj)){
+        $jObj = new stdClass();
+    }
+    $jObj->cod = $cod;
+    $jObj->desc = $desc;
+    return $jObj;
+}
+
+function getIdTerritorio($desc, $conn){
+    //Ritornare l'id
+    $query = "SELECT idTer FROM territori WHERE descr='".$desc."'";
+    $ris = $conn->query($query);
+    if($ris){
+        $jObj = preparaRisp(0, "Query ok");
+        if($ris->num_rows > 0){
+            //trasforma la tabella ritornata in un vettore associativo 
+            $vet = $ris->fetch_assoc();
+            $jObj->idTer = $vet["idTer"];
+        }else{
+            
+        }
+    }else{
+        $jObj = preparaRisp(-1, "Errore nella query");
+    }
+    return $jObj;
+}
