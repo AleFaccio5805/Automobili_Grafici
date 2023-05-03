@@ -8,7 +8,11 @@ window.onload = function(){
 
     //input[type=file] -> prelevo il primo input di tipo file
     _inputFile = document.querySelector("input[type=file]");
-    _main = document.querySelector("main");    
+    _main = document.querySelector("main");   
+    
+    //Collegarvi al server, scaricare i mezzi inseriti su db
+    //e creare la tabella dinamicamente
+    
 };
 
 function onbtnCarica(){
