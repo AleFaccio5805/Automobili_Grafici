@@ -2,7 +2,7 @@ var _btnCarica = null;
 var _inputFile = null, _main = null;
 var urlBase = window.location.href;
 
-window.onload = function(){
+window.onload = async function(){
     _btnCarica = document.getElementsByTagName("button")[0];
     _btnCarica.addEventListener("click", onbtnCarica);
 
@@ -12,7 +12,26 @@ window.onload = function(){
     
     //Collegarvi al server, scaricare i mezzi inseriti su db
     //e creare la tabella dinamicamente
-    
+    let busta = await fetch(urlBase + "server/scaricaMezzi.php", {method:"get"});
+    //Leggo il contenuto della busta
+    let datiDb = await busta.json();
+
+    let tabella = document.createElement("table");
+    let tbody = document.createElement("tbody");
+    tabella.appendChild(tbody);
+    _main.appendChild(tabella);
+
+    //Dati
+    let html = "";
+    for(let i=0; i<  datiDb.mezzi.length; i++){
+        html += "<tr>";
+        for(let idcolonna in datiDb.mezzi[i]){
+            html += `<td>${datiDb.mezzi[i][idcolonna]}</td>`;
+        }
+        html += "</tr>";
+    }
+    tbody.innerHTML = html;
+
 };
 
 function onbtnCarica(){
