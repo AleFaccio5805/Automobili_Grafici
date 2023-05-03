@@ -32,7 +32,36 @@ window.onload = async function(){
     }
     tbody.innerHTML = html;
 
+    disegnaGrafico(datiDb.mezzi);    
 };
+
+function disegnaGrafico(mezzi){
+    let dati = {
+        labels: [],
+        datasets: [{
+          label: 'My First Dataset',
+          data: new Array()
+        }]
+      };
+    
+      let prova = [];
+
+    for(let record of mezzi){
+        dati.labels.push(record.territorio);
+        prova.push(parseInt(record.val));
+    }
+
+    dati.datasets.data = prova;
+    
+
+    let canvas = document.createElement("canvas");
+    canvas.style.height="300px";
+    document.getElementsByTagName("main")[0].appendChild(canvas);
+    let grafico = new Chart(canvas, {
+        type: 'polarArea',
+        data: dati
+    });
+}
 
 function onbtnCarica(){
     alert("Sto per caricare il file");
