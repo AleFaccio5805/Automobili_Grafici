@@ -51,7 +51,7 @@ function disegnaGrafico(mezzi){
         prova.push(parseInt(record.val));
     }
 
-    dati.datasets.data = prova;
+    dati.datasets[0].data = prova;
     
 
     let canvas = document.createElement("canvas");
