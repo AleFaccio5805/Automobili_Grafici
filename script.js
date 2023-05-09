@@ -16,6 +16,8 @@ window.onload = async function(){
     //Leggo il contenuto della busta
     let datiDb = await busta.json();
 
+    console.log(datiDb);
+
     let tabella = document.createElement("table");
     let tbody = document.createElement("tbody");
     tabella.appendChild(tbody);
@@ -23,7 +25,7 @@ window.onload = async function(){
 
     //Dati
     let html = "";
-    for(let i=0; i<  datiDb.mezzi.length; i++){
+    for(let i=0; i<datiDb.mezzi.length; i++){
         html += "<tr>";
         for(let idcolonna in datiDb.mezzi[i]){
             html += `<td>${datiDb.mezzi[i][idcolonna]}</td>`;
@@ -59,6 +61,22 @@ function disegnaGrafico(mezzi){
     document.getElementsByTagName("main")[0].appendChild(canvas);
     let grafico = new Chart(canvas, {
         type: 'polarArea',
+        data: dati
+    });
+    //document.getElementsByTagName("main")[0].innerHTML += "<br/><br/>";
+    canvas = document.createElement("canvas");
+    canvas.style.height="300px";
+    document.getElementsByTagName("main")[0].appendChild(canvas);
+
+    let barre = new Chart(canvas, {
+        type: 'bar',
+        data: dati
+    });
+    canvas = document.createElement("canvas");
+    canvas.style.height="300px";
+    document.getElementsByTagName("main")[0].appendChild(canvas);
+    let torta = new Chart(canvas, {
+        type: 'pie',
         data: dati
     });
 }
@@ -100,7 +118,7 @@ function onbtnCarica(){
 
         //Contatto il server
         //Proviamo a connetterci al server
-        for(let i=2; i< 10; i++){
+        for(let i=2; i< record.length-1; i++){
             let busta = await fetch(urlBase + "server/inserisciMezzo.php", {
                     method:"post",
                     body:JSON.stringify(record[i])

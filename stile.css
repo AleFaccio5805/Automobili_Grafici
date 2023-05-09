@@ -11,6 +11,10 @@ header{
     font-size: 30pt;
 }
 
+canvas{
+    margin-top: 30px;
+}
+
 main{
     height: 70vh;
     overflow: auto;
