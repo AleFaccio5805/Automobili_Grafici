@@ -19,3 +19,12 @@ main{
     height: 70vh;
     overflow: auto;
 }
+
+table, tr, th{
+    border: 2px solid black;
+}
+
+td{
+    border-left: 2px solid black;
+    border-bottom: 2px solid black;
+}
